@@ -1,0 +1,399 @@
+from z3 import * # load z3 library
+
+
+
+
+
+
+
+
+# declare a Boolean variable
+p1 = Bool ( "p1" )
+p2 = Bool ( "p2" ) 
+
+
+
+
+
+
+
+
+
+
+
+
+# construct a formula
+phi = Or ( p1 , p2 )
+phi = Or (phi,phi)
+
+
+
+# printing the formula
+print ( phi )        
+
+
+
+
+# allocate solver
+s = Solver ()
+
+
+
+
+# add formula to the solver
+s.add ( phi )
+
+
+
+
+# check satisfiability
+r = s.check()
+
+
+
+
+# if r == sat :
+#     print( " sat " )
+# else:
+#     print( " unsat " )
+
+    
+
+# save the script test.py
+# run
+#  $python3 test.py
+
+
+
+
+if r == sat:
+    # read  assignment/model
+    m = s.model()
+    # print model
+    print(m)
+else:
+    print("unsat")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# packaging solving and model printing
+
+def solve ( phi ):
+    s = Solver ()
+    s.add ( phi )
+    r = s.check() # runs CDCL;creates a model
+    if r == sat :
+        m = s.model() # only pick up 
+        print( m )
+    else:
+        print(r)
+        # print( "unsat" )
+
+
+p1_p2 = And(p1,p2)
+
+solve( p1_p2 )
+
+
+
+
+# accessing sub - formulas
+# print ( p1_p2.arg(0) )
+# print ( p1_p2.arg(1) )
+
+
+# accessing the symbol at the head
+# ab_decl = p1_p2.decl()
+# name = ab_decl.name()
+# if name == "and" :
+#     print ( "Found an And" )
+# if name == "or" :
+#     print ( "Found an And" )
+
+
+
+
+
+x = Int('x')
+y = Int('y')
+# phi = And( x + y > 5, x > 1 , y > 1, x < 2)
+# solve ( phi )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# declaring Int -> Int function
+# h = Function( 'h' , IntSort() , IntSort() )
+# phi = And ( y != 2, h( x ) > 40/2 , h( y ) < 2 )
+# solve( phi )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+u = DeclareSort( 'U' ) # declaring new sort
+c = Const ( 'c' , u )
+# declaring a constant of the sort
+f = Function ( 'f' , u , u ) # declaring a function of the sort
+# # declaring a predicate of the sort
+P = Function ( 'P' , u , BoolSort () )
+
+# # # 
+phi = And( f ( c ) != c , P( f(c) ), Not ( P ( c ) )  )
+# solve ( phi )
+
+# U = { U!val!0, U!val!1 }
+# c = U!val!0
+# f _ -> U!val!1
+# P _ -> True
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# u = DeclareSort ( 'U' )
+# H = Function ( 'Human' , u , BoolSort () )
+# M = Function ( 'Mortal' , u , BoolSort () )
+# s = Const ( 'Socrates' , u )
+
+# # Humans are mortals
+# x = Const ( 'x' , u )
+# y = Const ( 'y' , u )
+
+# all_mort = ForAll( x , Implies( H ( x ) , M ( x ) ) )
+
+# # # ,
+# thm = Implies ( And (  all_mort, H ( s ) ) , M( s ) )
+# solve ( Not ( thm ) )
+
+
+
+
+
+
+# alt = ForAll( x, Exists( y, Implies( H(x), M(y) ) ))
+# # print(all_mort.body())
+# #print(alt.body().body())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+u = DeclareSort ( 'U' ) # declaring new sort
+# declaring a predicate of the sort
+
+E = Function ( 'E' , u , u, BoolSort () )
+
+x = Const ( 'x' , u )
+y = Const ( 'y' , u )
+z = Const ( 'z' , u )
+
+# #   (0,0), (0,1)
+# #  {0 1->2->3->4} 
+# #  
+
+always_next = ForAll( x, Exists( y, E(x,y) ))
+noself_loop = ForAll( x, Not( E(x,x) ) )
+trans = ForAll([x,y,z], Implies( And( E(x,y), E(y,z) ), E(x,z) ))
+
+# 
+
+# solve( And(always_next,noself_loop,trans) )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# always_edge = ForAll( x, Exists( y, E(x,y)) )
+
+# no_selfloop = ForAll(x, Not(E(x,x)) )
+
+# #
+# phi = And( trans, always_edge,  no_selfloop )
+# solve ( phi )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# a = Bool('a')
+# x = Bool('b')
+
+# ab = And( a, x )
+
+# # ab.arg(0)
+
+# print(ab.arg(0))
+# print(ab.arg(1))
+
+# ab_decl = ab.decl()
+# name = ab_decl.name()
+# print(name)
+# if name == "and":
+#     print("Found an And")
+# print(ab_decl)
